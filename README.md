@@ -55,15 +55,6 @@ print(await search.query("what is the history of France TV?", "userid"))
 - download_file : download file
     >id: document id
 - differential_indexation : index only new/updated/removed documents
-- get_scenarios : List all available scenarios with theirs API signatures
-- get_logs : Get KAI Semantic layer logs
-    log types: LLM error 500, LLM error 503, LLM Limitation rate, Application information, Excel parser error, Ppt Parser error, Word Parser error, Image Parser error, PDF Parser Error, Markdown Parser Error, Html Parser Error
-    >type: `type of log you want (like'Application information'), dont add if you want to get back all logs`
-    
-    >skip: 'pagination skip elements'
-
-    >take: 'pagination take elements'
-- reinit_all : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size of databases connected to KAI
 
 For example:
 ```py
@@ -74,8 +65,6 @@ print(await core.count_documents())
 
 ### Auditing
 [KMAudit.py](modules/KMAudit.py) provides methods for auditing.
-- get_all_tasks_linked_to_a_document : Get back all tasks linked to a document
-    >id: "Id of the document"
 
 - get_conflict_information : get back conflict information
     >limit: 'number of content to return'
@@ -129,7 +118,7 @@ print(await manage_instance.get_global_health())
     >id: 'Id of the reference node'
 - get_node_by_label : Get all nodes who is involved by the label tag
     >label: 'Label tag'
-- detect_approximal_nodes : Identify nodes who can be used to defined the semaantic context of the query
+- detect_approximate_nodes : Identify nodes who can be used to defined the semaantic context of the query
     >query: 'query searched'
 
 

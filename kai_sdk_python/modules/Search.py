@@ -2,6 +2,7 @@ from typing import List, Literal, TypedDict, Dict
 
 import httpx
 
+
 class DocumentResult:
 
     def __init__(self, id: str, name: str, url: str, rate: float):
@@ -10,6 +11,7 @@ class DocumentResult:
         self.url = url
         self.rate = rate
 
+
 class SearchLog:
     def __init__(self, id: int, query: str, answer_text: str, user_id: str):
         self.id = id
@@ -17,9 +19,11 @@ class SearchLog:
         self.answer_text = answer_text
         self.user_id = user_id
 
+
 class ConversationMessage(TypedDict):
-    from_: Literal['user', 'assistant'] 
+    from_: Literal['user', 'assistant']
     message: str
+
 
 class SearchResult:
     query: str
@@ -67,7 +71,9 @@ class Search:
     async def get_doc_signature(self, docId):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
-                response = await client.post(self.__baseurl + "api/search/doc/" + docId, headers=self.__headers)
+                response = await client.post(self.__baseurl + "api/search/doc", headers=self.__headers, json={
+                    "id": docId
+                })
 
                 return response.json() if response.status_code == 200 else response.text
 
@@ -115,7 +121,8 @@ class Search:
                                                  "limit": limit,
                                                  "offset": offset
                                              })
-                return [SearchLog(**item) for item in response.json()["response"]] if response.status_code == 200 else response.text
+                return [SearchLog(**item) for item in
+                        response.json()["response"]] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -125,6 +132,16 @@ class Search:
                 response = await client.post(self.__baseurl + "api/search/identify-specific-document",
                                              headers=self.__headers,
                                              json={"conversation": conversation})
+                return response.json() if response.status_code == 200 else response.text
+
+            except Exception as err:
+                print(err)
+
+    async def get_version(self) -> str:
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(self.__baseurl + "version",
+                                             headers=self.__headers)
                 return response.json() if response.status_code == 200 else response.text
 
             except Exception as err:

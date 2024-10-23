@@ -7,18 +7,6 @@ class KMAudit:
         self.__baseurl = base_url
         self.__headers = headers
 
-    async def get_all_tasks_linked_to_a_document(self, document_id: str):
-        async with httpx.AsyncClient(verify=False, timeout=None) as client:
-            try:
-                response = await client.post(self.__baseurl + "api/audit/document/tasks",
-                                             headers=self.__headers,
-                                             json={
-                                                 "id": document_id
-                                             })
-                return response.json() if response.status_code == 200 else response.text
-            except Exception as err:
-                print(err)
-
     async def get_conflict_information(self, limit, offset):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
@@ -79,7 +67,7 @@ class KMAudit:
                 return response.json() if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
-    
+
     async def get_missing_subjects(self, limit, offset):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:

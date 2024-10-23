@@ -42,7 +42,7 @@ class SemanticGraph:
             except Exception as err:
                 print(err)
 
-    async def detect_approximal_nodes(self, query):
+    async def detect_approximate_nodes(self, query):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/semantic-graph/identify-nodes",

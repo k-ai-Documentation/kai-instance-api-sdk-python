@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="kai_sdk_python",
-    version="20241011.2",
+    version="20241023",
     author="KAI",
     author_email="support@wats.ai",
     description="sdk KAI python",

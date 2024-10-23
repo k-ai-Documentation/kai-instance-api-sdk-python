@@ -13,7 +13,6 @@ km_audit = KaiStudio(credentials).km_audit()
 semantic_graph = KaiStudio(credentials).semantic_graph()
 core = KaiStudio(credentials).core()
 
-
 async def sync_mode():
     # CORE
     print("COUNT DOCUMENTS")
@@ -22,7 +21,7 @@ async def sync_mode():
     print("COUNT INDEXABLE DOCUMENTS")
     print(await core.count_indexable_documents())
 
-    print("COUNT INDEXED DOCUMENTS")    
+    print("COUNT INDEXED DOCUMENTS")
     print(await core.count_indexed_documents())
 
     print("COUNT DETECTED DOCUMENTS")
@@ -34,18 +33,7 @@ async def sync_mode():
     print("DIFFERENTIAL INDEXATION")
     print(await core.differential_indexation())
 
-    print("GET SCENARIOS")
-    print(await core.get_scenarios())
-
-    # print("GET LOGS")
-    print(await core.get_logs("type", 0, 10))
-
-    # print("REINIT_ALL")
-    print(await core.reinit_all())
-
     # AUDIT
-    # print("GET ALL TASK LINKED TO A DOCUMENT")
-    print(await km_audit.get_all_tasks_linked_to_a_document("document_id"))
 
     print("GET CONFLICT INFORMATION")
     print(await km_audit.get_conflict_information(20, 0))
@@ -86,7 +74,7 @@ async def sync_mode():
 
     print("GET DOC SIGNATURE:")
     print(await search.get_doc_signature("document_id"))
-    
+
     print("GET DOCS BY IDS:")
     print(await search.get_doc_ids(["document_id1","document_id2"]))
 
@@ -114,7 +102,7 @@ async def sync_mode():
     print(await semantic_graph.get_node_by_label("node_label"))
 
     print("DETECT APPROXIMAL NODES:")
-    print(await semantic_graph.detect_approximal_nodes("query"))
+    print(await semantic_graph.detect_approximate_nodes("query"))
 
 
 
