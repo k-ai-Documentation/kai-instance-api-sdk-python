@@ -1,7 +1,7 @@
 import asyncio
 
-from index import KaiStudio
-from index import KaiStudioCredentials
+from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioCredentials
 
 credentials = KaiStudioCredentials(organizationId="your organization id",
                                    instanceId="your instance id",

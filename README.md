@@ -4,7 +4,36 @@
 SDK python enables developers to efficiently manage files, instance, perform searches, handle thematic content, and conduct audits. This toolkit is designed to streamline the integration of complex functionalities into python-based projects.
 
 ## Installation
+You have 3 ways to install sdk_python in your project:
+1. You can install it via pip:
+```
+pip install git+https://github.com/k-ai-Documentation/sdk-python.git@version2.0
+```
+then you can import the SDK in your project:
+```python
+from kai_sdk_python.index import KaiStudio, KaiStudioCredentials
+```
+2. You can install it via requirements.txt:
+add this line in your requirements.txt file:
+```
+git+https://github.com/k-ai-Documentation/sdk-python.git@version2.0
+```
+then you can install it via pip:
+```
+pip install -r requirements.txt
+```
+then you can import the SDK in your project:
+```python
+from kai_sdk_python.index import KaiStudio, KaiStudioCredentials
+```
+3. You can clone the repository and install it manually:
+
 To integrate the SDK into your project, include the SDK files in your project directory. 
+
+then you can import the SDK in your project:
+```python
+from your_repo.kai_sdk_python.index import KaiStudio, KaiStudioCredentials
+```
 
 ## Quick start
 There are two type of versions: SaaS version and Premise version.
@@ -16,8 +45,8 @@ SaaS version means you are using the service provided by Kai with cloud service.
 Here's a simple example to get you started with the SDK:
 
 ```
-from index import KaiStudio
-from index import KaiStudioCredentials
+from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioCredentials
 
 credentials = KaiStudioCredentials({organizationId="your organization id",
                                    instanceId="your instance id",
@@ -34,8 +63,8 @@ Premise version means you are using the service in your local server in your ent
 Here's a simple example to get you started with the SDK:
 
 ```
-from index import KaiStudio
-from index import KaiStudioCredentials
+from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioCredentials
 
 //apiKey is optionnal
 credentials = KaiStudioCredentials({host="your server host", apiKey="your api key"})
