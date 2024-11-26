@@ -84,6 +84,7 @@ print(await search.query("what is the history of France TV?", "userid"))
 - download_file : download file
     >id: document id
 - differential_indexation : index only new/updated/removed documents
+- list_docs: list indexed documents
 
 For example:
 ```py
