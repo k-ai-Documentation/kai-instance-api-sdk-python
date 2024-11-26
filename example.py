@@ -45,7 +45,7 @@ async def sync_mode():
     print("GET DUPLICATED INFORMATION")
     print(await km_audit.get_duplicated_information(20, 0))
 
-    print("SET CONFLIT MANAGED")
+    print("SET CONFLICT MANAGED")
     print(await km_audit.set_conflict_managed("information_id"))
 
     print("SET DUPLICATED MANAGED")
