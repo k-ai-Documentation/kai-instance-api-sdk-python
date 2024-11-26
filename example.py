@@ -13,6 +13,7 @@ km_audit = KaiStudio(credentials).km_audit()
 semantic_graph = KaiStudio(credentials).semantic_graph()
 core = KaiStudio(credentials).core()
 
+
 async def sync_mode():
     # CORE
     print("COUNT DOCUMENTS")
@@ -29,6 +30,9 @@ async def sync_mode():
 
     # print("DOWNLOAD FILE")
     print(await core.download_file("file_id"))
+
+    print("GET DOCUMENT LIST")
+    print(await core.list_docs(20, 0))
 
     print("DIFFERENTIAL INDEXATION")
     print(await core.differential_indexation())
@@ -57,9 +61,6 @@ async def sync_mode():
     print("GET GLOBAL HEALTH:")
     print(await manage_instance.get_global_health())
 
-    print("GET VERSION:")
-    print(await manage_instance.version())
-
     print("API IS ALIVE:")
     print(await manage_instance.is_api_alive())
 
@@ -76,7 +77,7 @@ async def sync_mode():
     print(await search.get_doc_signature("document_id"))
 
     print("GET DOCS BY IDS:")
-    print(await search.get_doc_ids(["document_id1","document_id2"]))
+    print(await search.get_doc_ids(["document_id1", "document_id2"]))
 
     print("COUNT DONE REQUESTS:")
     print(await search.count_done_requests())
@@ -89,7 +90,8 @@ async def sync_mode():
 
     print("IDENTIFY SPECIFIC DOCUMENT:")
     # input: an array on a conversation of the user and the assistant, each row of the array follow the structure { from: 'user' | 'assistant', message: string }
-    print(await search.identify_specific_document([{'from':"user", 'message': "user message"}, {'from':"assistant", 'message': "assistant message"}]))
+    print(await search.identify_specific_document(
+        [{'from': "user", 'message': "user message"}, {'from': "assistant", 'message': "assistant message"}]))
 
     # SEMANTIC GRAPH
     print("GET NODES:")
@@ -103,7 +105,6 @@ async def sync_mode():
 
     print("DETECT APPROXIMAL NODES:")
     print(await semantic_graph.detect_approximate_nodes("query"))
-
 
 
 async def async_mode():

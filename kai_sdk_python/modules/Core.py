@@ -34,6 +34,19 @@ class Core:
             except Exception as err:
                 print(err)
 
+    async def list_docs(self, limit, offset):
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(self.__baseurl + "api/orchestrator/list-docs",
+                                             headers=self.__headers, json={
+                        "limit": limit,
+                        "offset": offset
+                    })
+
+                return response.json() if response.status_code == 200 else response.text
+            except Exception as err:
+                print(err)
+
     async def count_detected_documents(self):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
