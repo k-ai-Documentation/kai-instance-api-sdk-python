@@ -12,7 +12,7 @@ class Core:
             try:
                 response = await client.post(self.__baseurl + "api/orchestrator/stats/count-documents",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -21,7 +21,7 @@ class Core:
             try:
                 response = await client.post(self.__baseurl + "api/orchestrator/stats/count-indexable-documents",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -30,7 +30,7 @@ class Core:
             try:
                 response = await client.post(self.__baseurl + "api/orchestrator/stats/count-indexed-documents",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -43,7 +43,7 @@ class Core:
                         "offset": offset
                     })
 
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -52,7 +52,7 @@ class Core:
             try:
                 response = await client.post(self.__baseurl + "api/orchestrator/stats/count-detected-documents",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -63,7 +63,7 @@ class Core:
                                              json={
                                                  "id": file_id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -72,6 +72,6 @@ class Core:
             try:
                 response = await client.post(self.__baseurl + "api/orchestrator/differential-indexation",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)

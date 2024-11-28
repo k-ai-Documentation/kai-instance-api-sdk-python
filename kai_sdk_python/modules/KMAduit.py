@@ -15,7 +15,7 @@ class KMAudit:
                                                  "limit": limit if not limit else 20,
                                                  "offset": offset if not offset else 0,
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -28,7 +28,7 @@ class KMAudit:
                                                  "limit": limit if not limit else 20,
                                                  "offset": offset if not offset else 0,
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -40,7 +40,7 @@ class KMAudit:
                                              json={
                                                  "id": information_id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -52,7 +52,7 @@ class KMAudit:
                                              json={
                                                  "id": information_id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -64,7 +64,7 @@ class KMAudit:
                                                  "limit": limit if not limit else 20,
                                                  "offset": offset if not offset else 0,
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -76,6 +76,6 @@ class KMAudit:
                                                  "limit": limit if not limit else 20,
                                                  "offset": offset if not offset else 0,
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)

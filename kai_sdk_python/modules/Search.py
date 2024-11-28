@@ -63,7 +63,7 @@ class Search:
                     "multiDocuments": multiDocuments,
                     "needFollowingQuestions": needFollowingQuestions
                 })
-                return SearchResult(**response.json()["response"]) if response.status_code == 200 else response.text
+                return response.json()["response"] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
@@ -75,7 +75,7 @@ class Search:
                     "id": docId
                 })
 
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
@@ -87,7 +87,7 @@ class Search:
                     "docsIds": docIds
                 })
 
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
@@ -121,8 +121,7 @@ class Search:
                                                  "limit": limit,
                                                  "offset": offset
                                              })
-                return [SearchLog(**item) for item in
-                        response.json()["response"]] if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -132,7 +131,7 @@ class Search:
                 response = await client.post(self.__baseurl + "api/search/identify-specific-document",
                                              headers=self.__headers,
                                              json={"conversation": conversation})
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
@@ -142,7 +141,7 @@ class Search:
             try:
                 response = await client.post(self.__baseurl + "version",
                                              headers=self.__headers)
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
