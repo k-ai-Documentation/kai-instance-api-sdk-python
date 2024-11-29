@@ -99,3 +99,13 @@ class ManageInstance:
                 return response.json()['response']
             except Exception as err:
                 print(err)
+
+    async def get_version(self) -> str:
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(self.__baseurl + "version",
+                                             headers=self.__headers)
+                return response.json()['response'] if response.status_code == 200 else response.text
+
+            except Exception as err:
+                print(err)

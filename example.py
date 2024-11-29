@@ -68,7 +68,7 @@ async def sync_mode():
     print("SEARCH QUERY:")
     # query: 'query to search on the semantic index',
     # user: '(optional) user identifier to log for this query',
-    # impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager or Sales man',
+    # impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager',
     # multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document',
     # needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
     print(await search.query("what is the history of France TV?", "userid", "", False, False))
