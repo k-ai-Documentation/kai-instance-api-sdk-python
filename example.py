@@ -37,6 +37,9 @@ async def sync_mode():
     print("DIFFERENTIAL INDEXATION")
     print(await core.differential_indexation())
 
+    print("LAST INDEXATION TIME")
+    print(await core.last_indexation_time())
+
     # AUDIT
 
     print("GET CONFLICT INFORMATION")
@@ -56,6 +59,15 @@ async def sync_mode():
 
     print("GET MISSING SUBJECTS")
     print(await km_audit.get_missing_subjects(20, 0))
+
+    print("COUNT MISSING SUBJECTS")
+    print(await km_audit.count_missing_subjects())
+
+    print("COUNT DUPLICATED INFORMATION")
+    print(await km_audit.count_duplicated_information())
+
+    print("COUNT CONFLICT INFORMATION")
+    print(await km_audit.count_conflict_information())
 
     # MANAGE INSTANCE
     print("GET GLOBAL HEALTH:")

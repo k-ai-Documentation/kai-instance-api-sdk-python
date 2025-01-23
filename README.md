@@ -133,6 +133,13 @@ print(await core.count_documents())
     ```
 - differential_indexation : Index only new/updated/removed documents. It ensures that the documents are updated and their indexing reflects the latest modifications. (in progress, not finish)
 
+- last_indexation_time : Get the last indexation time
+
+    **return** example:
+    ```json
+    "2024-09-16T13:48:15.651Z"
+    ```
+
 ### Auditing
 [KMAudit.py](modules/KMAudit.py) provides methods for auditing.
 
@@ -362,6 +369,25 @@ print(await km_audit.get_conflict_information(20, 0))
             "information_needed": "- Inquiry about the cost of shipping a 45000 cm3 package to England.\n- Procedure for sending a 45000 cm3 package to England."
         }
     ]
+    ```
+- count_missing_subjects : Count all missing subjects following user queries
+
+    **return** example:
+    ```json
+    3
+    ```
+- count_duplicate_information : Count all duplicate information
+
+    **return** example:
+    ```json
+    0
+    ```
+
+- count_conflict_information : count all conflict information
+
+    **return** example:
+    ```json
+    0
     ```
 
 ### ManageInstance
