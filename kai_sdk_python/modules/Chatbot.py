@@ -24,7 +24,7 @@ class Chatbot:
                 response = await client.post(self.__baseurl + "api/chatbot/message",
                                              headers=self.__headers,
                                              json={
-                                                 "conversation_id": conversation_id,
+                                                 "id": conversation_id,
                                                  "user_message": user_message,
                                                  "multi_documents": multi_documents,
                                                  "user_id": user_id
