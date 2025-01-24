@@ -15,7 +15,7 @@ class SemanticGraph:
                                                  "limit": limit if not limit else 20,
                                                  "offset": offset if not offset else 0,
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -26,7 +26,7 @@ class SemanticGraph:
                                              json={
                                                  "id": id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -38,7 +38,7 @@ class SemanticGraph:
                                              json={
                                                  "label": label
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -50,6 +50,6 @@ class SemanticGraph:
                                              json={
                                                  "query": query
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)

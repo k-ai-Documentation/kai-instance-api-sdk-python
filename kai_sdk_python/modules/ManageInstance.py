@@ -12,7 +12,7 @@ class ManageInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post("https://api.kai-studio.ai/global-health", headers=self.__headers)
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -20,7 +20,7 @@ class ManageInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post("https://api.kai-studio.ai/health", headers=self.__headers)
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -28,7 +28,7 @@ class ManageInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.get("https://ima.kai-studio.ai/generate-new-apikey", headers=self.__headers)
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -38,7 +38,7 @@ class ManageInstance:
                 response = await client.post("https://ima.kai-studio.ai/update-name", headers=self.__headers, json={
                     "name": name
                 })
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -46,7 +46,7 @@ class ManageInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post("https://ima.kai-studio.ai/deploy", headers=self.__headers)
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -54,7 +54,7 @@ class ManageInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post("https://ima.kai-studio.ai/delete", headers=self.__headers)
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -64,7 +64,7 @@ class ManageInstance:
                 response = await client.post("https://ima.kai-studio.ai/add-kb", headers=self.__headers, json={
                     "type": kb_type, "options": options, "searchGoal": search_goal
                 })
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -74,7 +74,7 @@ class ManageInstance:
                 response = await client.post("https://ima.kai-studio.ai/set-playground", headers=self.__headers, json={
                     "typeList": type_list
                 })
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -86,7 +86,7 @@ class ManageInstance:
                     "options": options,
                     "searchGoal": search_goal
                 })
-                return response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
 
@@ -96,6 +96,16 @@ class ManageInstance:
                 response = await client.post("https://ima.kai-studio.ai/remove-kb", headers=self.__headers, json={
                     "id": id
                 })
-                return response.text
+                return response.json()['response']
+            except Exception as err:
+                print(err)
+
+    async def get_version(self) -> str:
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(self.__baseurl + "version",
+                                             headers=self.__headers)
+                return response.json()['response'] if response.status_code == 200 else response.text
+
             except Exception as err:
                 print(err)

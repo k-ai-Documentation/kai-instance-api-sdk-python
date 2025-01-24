@@ -37,6 +37,9 @@ async def sync_mode():
     print("DIFFERENTIAL INDEXATION")
     print(await core.differential_indexation())
 
+    print("LAST INDEXATION TIME")
+    print(await core.last_indexation_time())
+
     # AUDIT
 
     print("GET CONFLICT INFORMATION")
@@ -57,6 +60,15 @@ async def sync_mode():
     print("GET MISSING SUBJECTS")
     print(await km_audit.get_missing_subjects(20, 0))
 
+    print("COUNT MISSING SUBJECTS")
+    print(await km_audit.count_missing_subjects())
+
+    print("COUNT DUPLICATED INFORMATION")
+    print(await km_audit.count_duplicated_information())
+
+    print("COUNT CONFLICT INFORMATION")
+    print(await km_audit.count_conflict_information())
+
     # MANAGE INSTANCE
     print("GET GLOBAL HEALTH:")
     print(await manage_instance.get_global_health())
@@ -68,7 +80,7 @@ async def sync_mode():
     print("SEARCH QUERY:")
     # query: 'query to search on the semantic index',
     # user: '(optional) user identifier to log for this query',
-    # impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager or Sales man',
+    # impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager',
     # multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document',
     # needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
     print(await search.query("what is the history of France TV?", "userid", "", False, False))

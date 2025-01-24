@@ -33,11 +33,7 @@ class FileInstance:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "list-files", headers=self.__headers)
-                file_list = []
-                if response.status_code == 200:
-                    for file in response.json()["response"]:
-                        file_list.append(KaiStudioFileSignature(**file))
-                return file_list if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
@@ -61,7 +57,7 @@ class FileInstance:
                     "file": fileName
                 })
 
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
