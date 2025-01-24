@@ -14,7 +14,7 @@ class Chatbot:
                                              json={
                                                  "id": conversation_id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
@@ -29,6 +29,6 @@ class Chatbot:
                                                  "multi_documents": multi_documents,
                                                  "user_id": user_id
                                              })
-                return response.json() if response.status_code == 200 else response.text
+                return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
