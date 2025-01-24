@@ -79,7 +79,7 @@ class Core:
     async def last_indexation_time(self):
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
-                response = await client.post(self.__baseurl + "api/orchestrator/stats/last-indexation",
+                response = await client.post(self.__baseurl + "api/orchestrator/last-indexation",
                                              headers=self.__headers)
                 return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
