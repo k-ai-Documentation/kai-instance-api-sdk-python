@@ -3,9 +3,9 @@ import asyncio
 from kai_sdk_python.index import KaiStudio
 from kai_sdk_python.index import KaiStudioCredentials
 
-credentials = KaiStudioCredentials(organizationId="c977644b-8b4a-43ee-8901-a609ef3b9e19",
-                                   instanceId="03fb090f-b2ac-444a-8356-6be9d9fe132a",
-                                   apiKey="TTLM0qFAT9FTXk/i6uvwh8IbU3jLw9/zMXvdSul2/E0=")
+credentials = KaiStudioCredentials(organizationId="xxxxxxx",
+                                   instanceId="xxxxxxx",
+                                   apiKey="xxxxxx")
 
 manage_instance = KaiStudio(credentials).manage_instance()
 search = KaiStudio(credentials).search()
