@@ -1,4 +1,3 @@
-
 # sdk-python
 
 ## Introduction
@@ -174,6 +173,39 @@ search = KaiStudio(credentials).search()
 print("RELATED FILES")
 print(await search.get_list_search(0, 10))
 ```
+
+### Chatbot
+
+[Chatbot](modules/Chatbot.py) provides methods for chatting.
+
+- getFullConversation : list all conversations of a given id
+  > id: id of conversation
+- conversation :
+  > id:[string] conversation id, for first message no id needed
+  >
+  >user_message: [string] user last message
+  >
+  >multi_documents: [boolean] search with multiple documents
+  >
+  >user_id: [string] (optional) user id to identify the user question in logs parts
+
+For example:
+
+```python
+chatbot = KaiStudio(credentials).chatbot()
+print("GET FULL CONVERSATION")
+print(await chatbot.get_full_conversation("xxxxxx"))
+```
+
+
+<u>**For more examples, you can check the [example.py](example.py) file.**</u>
+
+## Contributing
+bxu@k-ai.ai
+
+rmei@k-ai.ai
+
+sngo@k-ai.ai
 
 ### Chatbot
 
