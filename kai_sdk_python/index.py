@@ -1,3 +1,4 @@
+from .modules.Chatbot import Chatbot
 from .modules.KMAduit import KMAudit
 from .modules.KaiStudioCredentials import KaiStudioCredentials
 from .modules.ManageInstance import ManageInstance
@@ -14,6 +15,7 @@ class KaiStudio:
     __km_audit: KMAudit
     __semantic_graph: SemanticGraph
     __core: Core
+    __chatbot: Chatbot
 
     def __init__(self, credentials: KaiStudioCredentials):
         self.__credentials = credentials
@@ -39,6 +41,7 @@ class KaiStudio:
             self.__km_audit = KMAudit(headers, base_url)
             self.__semantic_graph = SemanticGraph(headers, base_url)
             self.__file_instance = FileInstance(headers)
+            self.__chatbot = Chatbot(headers, base_url)
 
     def get_credentials(self) -> KaiStudioCredentials:
         return self.__credentials
@@ -57,6 +60,9 @@ class KaiStudio:
 
     def core(self) -> Core:
         return self.__core
-    
+
     def file_instance(self) -> FileInstance:
         return self.__file_instance
+
+    def chatbot(self) -> Chatbot:
+        return self.__chatbot
