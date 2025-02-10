@@ -40,6 +40,9 @@ async def sync_mode():
     print("LAST INDEXATION TIME")
     print(await core.last_indexation_time())
 
+    print("LIST INDEXED DOCUMENTS")
+    print(await core.list_indexed_documents(20, 0))
+
     # AUDIT
 
     print("GET CONFLICT INFORMATION")
@@ -68,6 +71,9 @@ async def sync_mode():
 
     print("COUNT CONFLICT INFORMATION")
     print(await km_audit.count_conflict_information())
+
+    print("GET ANOMALIES FOR DOC")
+    print(await km_audit.get_anomalies_for_doc("document_id"))
 
     # MANAGE INSTANCE
     print("GET GLOBAL HEALTH:")

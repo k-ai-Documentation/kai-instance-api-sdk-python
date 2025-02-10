@@ -55,6 +55,10 @@ print(await search.query("what is the history of France TV?", "userid"))
 - download_file : download file
   >id: document id
 - differential_indexation : index only new/updated/removed documents
+- list_indexed_documents : list indexed documents
+  >limit: 'number of content to return'
+
+  >offset: 'number of content to skip before starting to collect the result set'
 - get_scenarios : List all available scenarios with theirs API signatures
 - get_logs : Get KAI Semantic layer logs
   log types: LLM error 500, LLM error 503, LLM Limitation rate, Application information, Excel parser error, Ppt Parser error, Word Parser error, Image Parser error, PDF Parser Error, Markdown Parser Error, Html Parser Error
@@ -100,6 +104,8 @@ print(await core.count_documents())
   >limit: "number of content to skip before starting to collect the result set (default 20)"
 
   >offset: "number of content to return (default 0)"
+- get_anomalies_for_doc : get back anomalies (conflict and duplicated information) for a document
+  >doc_id: 'id of the document'
 
 For example:
 ```py
