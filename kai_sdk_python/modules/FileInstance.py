@@ -61,3 +61,15 @@ class FileInstance:
 
             except Exception as err:
                 print(err)
+
+    async def download_file(self, fileName: str) :
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(self.__baseurl + "download-file", headers=self.__headers, json={
+                    "fileName": fileName
+                })
+
+                return response.json()['response'] if response.status_code == 200 else response.text
+
+            except Exception as err:
+                print(err)
