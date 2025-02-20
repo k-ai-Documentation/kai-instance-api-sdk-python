@@ -68,6 +68,8 @@ print(await search.query("what is the history of France TV?", "userid"))
 
   >take: 'pagination take elements'
 - reinit_all : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size of databases connected to KAI
+- last_indexation_begin_time : Get last indexation begin time
+- last_indexation_end_time : Get last indexation end time
 
 For example:
 ```py

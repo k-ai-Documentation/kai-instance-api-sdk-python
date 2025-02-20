@@ -38,7 +38,10 @@ async def sync_mode():
     print(await core.differential_indexation())
 
     print("LAST INDEXATION TIME")
-    print(await core.last_indexation_time())
+    print(await core.last_indexation_begin_time())
+
+    print("LAST INDEXATION END TIME")
+    print(await core.last_indexation_end_time())
 
     print("LIST INDEXED DOCUMENTS")
     print(await core.list_indexed_documents(20, 0))
