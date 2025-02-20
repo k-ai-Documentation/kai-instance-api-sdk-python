@@ -54,7 +54,10 @@ print(await search.query("what is the history of France TV?", "userid"))
 - count_detected_documents : get number of detected documents
 - download_file : download file
   >id: document id
+- list_docs : list documents
 - differential_indexation : index only new/updated/removed documents
+- last_indexation_begin_time : Get last indexation begin time
+- last_indexation_end_time : Get last indexation end time
 - list_indexed_documents : list indexed documents
   >limit: 'number of content to return'
 
@@ -68,8 +71,6 @@ print(await search.query("what is the history of France TV?", "userid"))
 
   >take: 'pagination take elements'
 - reinit_all : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size of databases connected to KAI
-- last_indexation_begin_time : Get last indexation begin time
-- last_indexation_end_time : Get last indexation end time
 
 For example:
 ```py
@@ -80,9 +81,6 @@ print(await core.count_documents())
 
 ### Auditing
 [KMAudit.py](modules/KMAudit.py) provides methods for auditing.
-- get_all_tasks_linked_to_a_document : Get back all tasks linked to a document
-  >id: "Id of the document"
-
 - get_conflict_information : get back conflict information
   >limit: 'number of content to return'
 
@@ -108,6 +106,9 @@ print(await core.count_documents())
   >offset: "number of content to return (default 0)"
 - get_anomalies_for_doc : get back anomalies (conflict and duplicated information) for a document
   >doc_id: 'id of the document'
+- count_missing_subjects : count missing subjects
+- count_duplicated_information : count duplicated information
+- count_conflict_information : count conflict information
 
 For example:
 ```py
@@ -181,39 +182,6 @@ search = KaiStudio(credentials).search()
 print("RELATED FILES")
 print(await search.get_list_search(0, 10))
 ```
-
-### Chatbot
-
-[Chatbot](modules/Chatbot.py) provides methods for chatting.
-
-- getFullConversation : list all conversations of a given id
-  > id: id of conversation
-- conversation :
-  > id:[string] conversation id, for first message no id needed
-  >
-  >user_message: [string] user last message
-  >
-  >multi_documents: [boolean] search with multiple documents
-  >
-  >user_id: [string] (optional) user id to identify the user question in logs parts
-
-For example:
-
-```python
-chatbot = KaiStudio(credentials).chatbot()
-print("GET FULL CONVERSATION")
-print(await chatbot.get_full_conversation("xxxxxx"))
-```
-
-
-<u>**For more examples, you can check the [example.py](example.py) file.**</u>
-
-## Contributing
-bxu@k-ai.ai
-
-rmei@k-ai.ai
-
-sngo@k-ai.ai
 
 ### Chatbot
 

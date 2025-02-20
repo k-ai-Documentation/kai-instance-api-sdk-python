@@ -28,7 +28,7 @@ async def sync_mode():
     print("COUNT DETECTED DOCUMENTS")
     print(await core.count_detected_documents())
 
-    # print("DOWNLOAD FILE")
+    print("DOWNLOAD FILE")
     print(await core.download_file("file_id"))
 
     print("GET DOCUMENT LIST")
