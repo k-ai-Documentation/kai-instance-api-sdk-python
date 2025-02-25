@@ -4,7 +4,9 @@ import httpx
 
 
 class DocumentResult:
-
+    """
+    Represents a document returned in search results.
+    """
     def __init__(self, id: str, name: str, url: str, rate: float):
         self.id = id
         self.name = name
@@ -13,6 +15,9 @@ class DocumentResult:
 
 
 class SearchLog:
+    """
+    Represents a log entry for a search request.
+    """
     def __init__(self, id: int, query: str, answer_text: str, user_id: str):
         self.id = id
         self.query = query
@@ -21,22 +26,19 @@ class SearchLog:
 
 
 class ConversationMessage(TypedDict):
+    """
+    Represents a message in a conversation.
+    """
     from_: Literal['user', 'assistant']
     message: str
 
 
 class SearchResult:
-    query: str
-    answer: str
-    confidentRate: float
-    gotAnswer: bool
-    reason: str
-    documents: List[DocumentResult]
-    followingQuestions: List[str]
-
+    """
+    Represents the result of a search query.
+    """
     def __init__(self, query: str, answer: str, confidentRate: float, gotAnswer: bool, reason: str,
-                 documents: List[DocumentResult],
-                 followingQuestions: List[str]):
+                 documents: List[DocumentResult], followingQuestions: List[str]):
         self.query = query
         self.answer = answer
         self.rate = confidentRate
@@ -47,13 +49,28 @@ class SearchResult:
 
 
 class Search:
-
+    """
+    Provides search-related functionalities via API requests.
+    """
     def __init__(self, headers, base_url):
+        """
+        Initializes the Search instance.
+        :param headers: Authentication headers.
+        :param base_url: Base URL for the API.
+        """
         self.__baseurl = base_url
         self.__headers = headers
 
-    # return SearchResult
-    async def query(self, query, user, impersonate, multiDocuments, needFollowingQuestions) -> SearchResult:
+    async def query(self, query: str, user: str, impersonate: bool, multiDocuments: bool, needFollowingQuestions: bool) -> SearchResult:
+        """
+        Executes a search query.
+        :param query: The search query string.
+        :param user: The userid performing the query.
+        :param impersonate: Whether to impersonate another user, by defaut is 'knowledge manager' if is not specified.
+        :param multiDocuments: Whether to allow to search in multiple documents.
+        :param needFollowingQuestions: Whether to include follow-up questions.
+        :return: SearchResult object.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/query", headers=self.__headers, json={
@@ -68,52 +85,72 @@ class Search:
             except Exception as err:
                 print(err)
 
-    async def get_doc_signature(self, docId):
+    async def get_doc_signature(self, docId: str):
+        """
+        Retrieves the signature of a specific document.
+        :param docId: Document ID.
+        :return: Document signature response.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/doc", headers=self.__headers, json={
                     "id": docId
                 })
-
                 return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
 
-    async def get_doc_ids(self, docIds):
+    async def get_doc_ids(self, docIds: List[str]):
+        """
+        Retrieves details of multiple documents by their IDs.
+        :param docIds: List of document IDs.
+        :return: Document details response.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/docs", headers=self.__headers, json={
                     "docsIds": docIds
                 })
-
                 return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
 
     async def count_done_requests(self) -> int:
+        """
+        Counts the number of completed search requests.
+        :return: The count of completed search requests.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/stats/count-search", headers=self.__headers)
-
                 return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
 
     async def count_answered_done_requests(self) -> int:
+        """
+        Counts the number of completed search requests with answers.
+        :return: The count of answered search requests.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/stats/count-answered-search",
                                              headers=self.__headers)
-
                 return response.json()['response'] if response.status_code == 200 else response.text
 
             except Exception as err:
                 print(err)
 
-    async def get_requests_to_api(self, limit, offset) -> List[SearchLog]:
+    async def get_requests_to_api(self, limit: int, offset: int) -> List[SearchLog]:
+        """
+        Retrieves a list of search requests made to the API.
+        :param limit: Maximum number of records to retrieve.
+        :param offset: Offset for pagination.
+        :return: List of SearchLog objects.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/stats/list-search", headers=self.__headers,
@@ -126,6 +163,11 @@ class Search:
                 print(err)
 
     async def identify_specific_document(self, conversation: List[ConversationMessage]) -> Dict:
+        """
+        Identifies a specific question based on a conversation.
+        :param conversation: List of conversation messages like [{ from: 'user' | 'assistant', message: string }].
+        :return: Response dictionary containing founded correct question or ai will ask you to clarify.
+        """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(self.__baseurl + "api/search/identify-specific-document",
