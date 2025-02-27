@@ -98,6 +98,22 @@ class Core:
                 return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
+    
+    async def count_in_progress_indexation_documents(self) -> int:
+        """
+        Count the number of documents that are currently being indexed.
+
+        :return: The number of documents that are currently being indexed.
+        """
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(
+                    f"{self.__baseurl}api/orchestrator/stats/count-inprogress-indexation-documents",
+                    headers=self.__headers
+                )
+                return response.json()['response'] if response.status_code == 200 else response.text
+            except Exception as err:
+                print(err)
 
     async def download_file(self, file_id: str):
         """

@@ -28,6 +28,9 @@ async def sync_mode():
     print("COUNT DETECTED DOCUMENTS")
     print(await core.count_detected_documents())
 
+    print("COUNT IN PROGRESS INDEXATION DOCUMENTS")
+    print(await core.count_in_progress_indexation_documents())
+
     print("DOWNLOAD FILE")
     print(await core.download_file("file_id"))
 

@@ -52,6 +52,7 @@ print(await search.query("what is the history of France TV?", "userid"))
 - count_indexable_documents : get number of indexable document
 - count_indexed_documents : get number of indexed documents
 - count_detected_documents : get number of detected documents
+- count_in_progress_indexation_documents: get number of in progress indexation documents
 - download_file : download file
   >id: document id
 - list_docs : list documents
