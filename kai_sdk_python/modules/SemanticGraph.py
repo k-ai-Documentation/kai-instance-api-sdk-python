@@ -21,7 +21,7 @@ class SemanticGraph:
         """
         Retrieves a paginated list of nodes from the semantic graph.
 
-        :param limit: The maximum number of nodes to retrieve.
+        :param limit: The maximum number of nodes to retrieve. Maximum is 50, by default is 20.
         :param offset: The starting point for pagination.
         :return: The response containing nodes data or an error message.
         """
