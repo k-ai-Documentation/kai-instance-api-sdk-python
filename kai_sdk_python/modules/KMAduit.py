@@ -16,12 +16,13 @@ class KMAudit:
         self.__baseurl = base_url
         self.__headers = headers
 
-    async def get_conflict_information(self, limit: int = 20, offset: int = 0):
+    async def get_conflict_information(self, limit: int = 20, offset: int = 0, query: str = ""):
         """
         Retrieve a list of conflict information records.
 
         :param limit: The number of records to retrieve (default: 20).
         :param offset: The starting position for retrieval (default: 0).
+        :param query: query string
         :return: A list of conflict information records.
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
@@ -29,18 +30,19 @@ class KMAudit:
                 response = await client.post(
                     f"{self.__baseurl}api/audit/conflict-information",
                     headers=self.__headers,
-                    json={"limit": limit, "offset": offset},
+                    json={"limit": limit, "offset": offset, "query": query},
                 )
                 return response.json()["response"] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
 
-    async def get_duplicated_information(self, limit: int = 20, offset: int = 0):
+    async def get_duplicated_information(self, limit: int = 20, offset: int = 0, query: str = ""):
         """
         Retrieve a list of duplicated information records.
 
         :param limit: The number of records to retrieve (default: 20).
         :param offset: The starting position for retrieval (default: 0).
+        :param query: query string
         :return: A list of duplicated information records.
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
@@ -48,7 +50,7 @@ class KMAudit:
                 response = await client.post(
                     f"{self.__baseurl}api/audit/duplicated-information",
                     headers=self.__headers,
-                    json={"limit": limit, "offset": offset},
+                    json={"limit": limit, "offset": offset, "query": query},
                 )
                 return response.json()["response"] if response.status_code == 200 else response.text
             except Exception as err:
