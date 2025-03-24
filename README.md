@@ -168,6 +168,7 @@ print(await manage_instance.get_global_health())
   > label: 'Label tag'
 - detect_approximal_nodes : Identify nodes who can be used to defined the semaantic context of the query
   > query: 'query searched'
+  > need_documents_content: 'whether response contains content' 
 
 For example:
 

@@ -6,7 +6,7 @@ class SemanticGraph:
     A class to interact with a semantic graph API, providing methods to retrieve nodes,
     linked nodes, nodes by label, and detect approximate nodes.
     """
-    
+
     def __init__(self, headers, base_url):
         """
         Initializes the SemanticGraph client.
@@ -71,10 +71,11 @@ class SemanticGraph:
             except Exception as err:
                 print(err)
 
-    async def detect_approximate_nodes(self, query):
+    async def detect_approximate_nodes(self, query, need_documents_content):
         """
         Detects and retrieves nodes that approximately match a given query.
 
+        :param need_documents_content: whether response contains content
         :param query: The search query used to identify nodes.
         :return: The response containing detected nodes or an error message.
         """
@@ -83,7 +84,8 @@ class SemanticGraph:
                 response = await client.post(self.__baseurl + "api/semantic-graph/identify-nodes",
                                              headers=self.__headers,
                                              json={
-                                                 "query": query
+                                                 "query": query,
+                                                 "need_documents_content": need_documents_content
                                              })
                 return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
