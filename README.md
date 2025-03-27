@@ -11,7 +11,6 @@ Install with pip:
 ```
 pip install git+https://github.com/k-ai-Documentation/sdk-python.git@version2.0
 ```
-Or to integrate the SDK into your project, include the SDK files in your project directory.
 
 ## Quick start
 
@@ -25,12 +24,13 @@ organizationId, instanceId, apiKey) to initialize kaiStudio.
 Here's a simple example to get you started with the SDK:
 
 ```
-from index import KaiStudio
-from index import KaiStudioCredentials
+from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioCredentials
 
-credentials = KaiStudioCredentials({organizationId="your organization id",
+credentials = KaiStudioCredentials(organizationId="your organization id",
                                    instanceId="your instance id",
-                                   apiKey="your api key"})
+                                   apiKey="your api key")
+
 search = KaiStudio(credentials).search()
 print("SEARCH QUERY:")
 print(await search.query("what is the history of France TV?", "userid"))
@@ -45,11 +45,11 @@ host and api key (optional) to initialize kaiStudio.
 Here's a simple example to get you started with the SDK:
 
 ```
-from index import KaiStudio
-from index import KaiStudioCredentials
+from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioCredentials
 
 //apiKey is optionnal
-credentials = KaiStudioCredentials({host="your server host", apiKey="your api key"})
+credentials = KaiStudioCredentials(host="your server host", apiKey="your api key")
 search = KaiStudio(credentials).search()
 print("SEARCH QUERY:")
 print(await search.query("what is the history of France TV?", "userid"))
