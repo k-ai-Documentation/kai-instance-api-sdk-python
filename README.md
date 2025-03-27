@@ -7,8 +7,11 @@ conduct audits. This toolkit is designed to streamline the integration of comple
 projects.
 
 ## Installation
-
-To integrate the SDK into your project, include the SDK files in your project directory.
+Install with pip:
+```
+pip install git+https://github.com/k-ai-Documentation/sdk-python.git@version2.0
+```
+Or to integrate the SDK into your project, include the SDK files in your project directory.
 
 ## Quick start
 
