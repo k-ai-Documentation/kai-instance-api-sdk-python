@@ -85,6 +85,13 @@ print(await search.query("what is the history of France TV?", "userid"))
   > take: 'pagination take elements'
 - reinit_all : Hard reset of KAI Semantic layer and reindex all datas, it can take a lot of time depending on the size
   of databases connected to KAI
+- check_pedding_job : Get the information about your instance background jobs in progress.
+
+    Available values :
+    
+    "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
+
+    "Loading Audit" : "Audit of the indexed documents is pending.
 
 For example:
 

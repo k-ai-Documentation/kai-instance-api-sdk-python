@@ -199,3 +199,25 @@ class Core:
                 return response.json()['response'] if response.status_code == 200 else response.text
             except Exception as err:
                 print(err)
+
+    async def check_pending_job(self) -> str:
+        """
+        Get the information about your instance background jobs in progress.
+
+        Available values :
+
+        "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
+
+        "Loading Audit" : "Audit of the indexed documents is pending."
+        """
+        async with httpx.AsyncClient(verify=False, timeout=None) as client:
+            try:
+                response = await client.post(
+                    f"{self.__baseurl}api/orchestrator/check-pending-job",
+                    headers=self.__headers
+                )
+                return response.json()['response'] if response.status_code == 200 else response.text
+            except Exception as err:
+                print(err)
+
+

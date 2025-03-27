@@ -49,6 +49,8 @@ async def sync_mode():
     print("LIST INDEXED DOCUMENTS")
     print(await core.list_indexed_documents(20, 0))
 
+    print("CHECK PENDING JOB")
+    print(await core.check_pending_job())
     # AUDIT
 
     print("GET CONFLICT INFORMATION")
