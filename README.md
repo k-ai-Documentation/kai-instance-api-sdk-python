@@ -95,6 +95,11 @@ print(await search.query("what is the history of France TV?", "userid"))
     "Indexation in progress" , "Partial indexation in progress" , "Recovery indexation in progress" : An indexation of new or updated documents is pending.
 
     "Loading Audit" : "Audit of the indexed documents is pending.
+- get_doc_signature : get back a document signature
+  > id: 'id of the document to get signature'
+
+- get_doc_ids : get back identified documents signature
+  > docsIds: 'all docs ids'
 
 For example:
 
@@ -202,12 +207,6 @@ print(semantic_graph.getNodes(10, 0))
   following only one document'
 
   > needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
-
-- get_doc_signature : get back a document signature
-  > id: 'id of the document to get signature'
-
-- get_doc_ids : get back identified documents signature
-  > docsIds: 'all docs ids'
 
 - count_done_requests : count number of call on search (/query) endpoint
 - count_answered_done_requests : count number of call on search (/query) endpoint where KAI find an answer

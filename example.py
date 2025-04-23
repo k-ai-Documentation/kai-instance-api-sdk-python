@@ -51,6 +51,12 @@ async def sync_mode():
 
     print("CHECK PENDING JOB")
     print(await core.check_pending_job())
+
+    print("GET DOC SIGNATURE:")
+    print(await core.get_doc_signature("document_id"))
+
+    print("GET DOCS BY IDS:")
+    print(await core.get_doc_ids(["document_id1", "document_id2"]))
     # AUDIT
 
     print("GET CONFLICT INFORMATION")
@@ -98,12 +104,6 @@ async def sync_mode():
     # multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document',
     # needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
     print(await search.query("what is the history of France TV?", "userid", "", False, False))
-
-    print("GET DOC SIGNATURE:")
-    print(await search.get_doc_signature("document_id"))
-
-    print("GET DOCS BY IDS:")
-    print(await search.get_doc_ids(["document_id1", "document_id2"]))
 
     print("COUNT DONE REQUESTS:")
     print(await search.count_done_requests())

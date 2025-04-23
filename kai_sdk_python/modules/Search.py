@@ -85,38 +85,6 @@ class Search:
             except Exception as err:
                 print(err)
 
-    async def get_doc_signature(self, docId: str):
-        """
-        Retrieves the signature of a specific document.
-        :param docId: Document ID.
-        :return: Document signature response.
-        """
-        async with httpx.AsyncClient(verify=False, timeout=None) as client:
-            try:
-                response = await client.post(self.__baseurl + "api/search/doc", headers=self.__headers, json={
-                    "id": docId
-                })
-                return response.json()['response'] if response.status_code == 200 else response.text
-
-            except Exception as err:
-                print(err)
-
-    async def get_doc_ids(self, docIds: List[str]):
-        """
-        Retrieves details of multiple documents by their IDs.
-        :param docIds: List of document IDs.
-        :return: Document details response.
-        """
-        async with httpx.AsyncClient(verify=False, timeout=None) as client:
-            try:
-                response = await client.post(self.__baseurl + "api/search/docs", headers=self.__headers, json={
-                    "docsIds": docIds
-                })
-                return response.json()['response'] if response.status_code == 200 else response.text
-
-            except Exception as err:
-                print(err)
-
     async def count_done_requests(self) -> int:
         """
         Counts the number of completed search requests.
