@@ -1,5 +1,5 @@
 from .modules.Chatbot import Chatbot
-from .modules.KMAduit import KMAudit
+from .modules.KMAudit import KMAudit
 from .modules.KaiStudioCredentials import KaiStudioCredentials
 from .modules.ManageInstance import ManageInstance
 from .modules.Search import Search
