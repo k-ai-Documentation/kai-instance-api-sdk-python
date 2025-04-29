@@ -67,16 +67,20 @@ print(await search.query("what is the history of France TV?", "userid"))
 - count_indexed_documents : get number of indexed documents
 - count_detected_documents : get number of detected documents
 - count_in_progress_indexation_documents: get number of in progress indexation documents
+- count_document_by_state: get number of documents by state
+  > state: 'OPTIONAL state of the document you want to get back, if state is not provided, return number of all states', see more: [state document](#state-document)
 - download_file : download file
   > id: document id
-- list_docs : list documents
-- differential_indexation : index only new/updated/removed documents
-- last_indexation_begin_time : Get last indexation begin time
-- last_indexation_end_time : Get last indexation end time
-- list_indexed_documents : list indexed documents
+- list_docs : list documents with state and pagination
   > limit: 'number of content to return'
 
   > offset: 'number of content to skip before starting to collect the result set'
+
+  > state: 'OPTIONAL state of the document you want to get back, if state is not set, all docs will be returned', see more: [state document](#state-document)
+
+- differential_indexation : index only new/updated/removed documents
+- last_indexation_begin_time : Get last indexation begin time
+- last_indexation_end_time : Get last indexation end time
 - get_scenarios : List all available scenarios with theirs API signatures
 - get_logs : Get KAI Semantic layer logs
   log types: LLM error 500, LLM error 503, LLM Limitation rate, Application information, Excel parser error, Ppt Parser
@@ -245,6 +249,19 @@ For example:
 chatbot = KaiStudio(credentials).chatbot()
 print("GET FULL CONVERSATION")
 print(await chatbot.get_full_conversation("xxxxxx"))
+```
+
+#### state-document 
+We have 6 states for a document:
+
+```python
+'TYPE_ERROR', # document type is not supported
+'INITIAL_SAVED', # initial save
+"UPDATED", # document is updated (without the content) par rapport à l'API
+'ON_CONTENT_EXTRACT', # document content is currently is working on fileparser
+'CONTENT_EXTRACTED', # document content is fetch from fileparser and chunks is saved
+'ON_INDEXATION', # document is in indexation progress
+'INDEXED' # document is fully indexed
 ```
 
 <u>**For more examples, you can check the [example.py](example.py) file.**</u>

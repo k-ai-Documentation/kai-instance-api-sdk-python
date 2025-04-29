@@ -1,5 +1,7 @@
 import httpx
 from typing import List
+import asyncio
+import aiohttp
 
 class Core:
     """
@@ -22,15 +24,28 @@ class Core:
 
         :return: The total number of documents.
         """
-        async with httpx.AsyncClient(verify=False, timeout=None) as client:
-            try:
-                response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/stats/count-documents",
-                    headers=self.__headers
+        try:
+            async with aiohttp.ClientSession(verify=False, timeout=None) as client:
+                all_doc_task = client.post(
+                    f"{self.base_url}api/core/count-documents-by-state",
+                    headers=self.headers,
+                    json={'state': ''}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
-            except Exception as err:
-                print(err)
+                error_type_task = client.post(
+                    f"{self.base_url}api/core/count-documents-by-state",
+                    headers=self.headers,
+                    json={'state': 'TYPE_ERROR'}
+                )
+
+                all_doc_response, error_type_response = await asyncio.gather(all_doc_task, error_type_task)
+
+                all_doc_count = int(await all_doc_response.json())['response']
+                error_type_count = int(await error_type_response.json())['response']
+
+                return all_doc_count - error_type_count
+        except Exception as e:
+            print(e)
+            return 0
 
     async def count_indexable_documents(self) -> int:
         """
@@ -40,13 +55,21 @@ class Core:
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
-                response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/stats/count-indexable-documents",
-                    headers=self.__headers
+                intial_save = client.post(
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "INITIAL_SAVE"}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                updated = client.post(
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "UPDATED"}
+                )
+                intial_save_response, updated_response = await asyncio.gather(intial_save, updated)
+                return intial_save_response.json()['response'] + updated_response.json()['response']
             except Exception as err:
                 print(err)
+                return 0
 
     async def count_indexed_documents(self) -> int:
         """
@@ -57,19 +80,22 @@ class Core:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/stats/count-indexed-documents",
-                    headers=self.__headers
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "INDEXED"}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
+                return 0
 
-    async def list_docs(self, limit: int, offset: int) -> list:
+    async def list_docs(self, limit: int, offset: int, state: str = '') -> list:
         """
         Retrieve a list of documents.
 
         :param limit: Number of documents to return.
         :param offset: Number of documents to skip.
+        :param state: State of the documents to retrieve. If state is not specified, all documents will be retrieved.
         :return: A list of documents.
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
@@ -77,11 +103,12 @@ class Core:
                 response = await client.post(
                     f"{self.__baseurl}api/orchestrator/list-docs",
                     headers=self.__headers,
-                    json={"limit": limit, "offset": offset}
+                    json={"limit": limit, "offset": offset, "state": state}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
+                return []
 
     async def count_detected_documents(self) -> int:
         """
@@ -92,12 +119,14 @@ class Core:
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/stats/count-detected-documents",
-                    headers=self.__headers
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": ''}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                return response.json()['response'] 
             except Exception as err:
                 print(err)
+                return 0
     
     async def count_in_progress_indexation_documents(self) -> int:
         """
@@ -107,13 +136,26 @@ class Core:
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
-                response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/stats/count-inprogress-indexation-documents",
-                    headers=self.__headers
+                on_content_extract = client.post(
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "ON_CONTENT_EXTRACT"}
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                content_extract = client.post(
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "CONTENT_EXTRACT"}
+                )
+                on_indexation = client.post(
+                    f"{self.__baseurl}api/core/count-documents-by-state",
+                    headers=self.__headers,
+                    json={"state": "ON_INDEXATION"}
+                )
+                on_indexation_response, content_extract_response, on_content_extract_response = await asyncio.gather(on_content_extract, content_extract, on_indexation)
+                return on_indexation_response.json()['response'] + content_extract_response.json()['response'] + on_content_extract_response.json()['response']
             except Exception as err:
                 print(err)
+                return 0
 
     async def download_file(self, file_id: str):
         """
@@ -181,24 +223,21 @@ class Core:
             except Exception as err:
                 print(err)
 
-    async def list_indexed_documents(self, limit: int, offset: int) -> list:
+    async def count_document_by_state(self, state: str = '') -> list:
         """
-        Retrieve a list of indexed documents.
-
-        :param limit: Number of indexed documents to return.
-        :param offset: Number of indexed documents to skip.
-        :return: A list of indexed documents.
+        Get the number of documents by state.
         """
         async with httpx.AsyncClient(verify=False, timeout=None) as client:
             try:
                 response = await client.post(
-                    f"{self.__baseurl}api/orchestrator/list-indexed-documents",
+                    f"{self.__baseurl}api/core/count-documents-by-state",
                     headers=self.__headers,
-                    json={"limit": limit, "offset": offset}
+                    json={"state": state }
                 )
-                return response.json()['response'] if response.status_code == 200 else response.text
+                return response.json()['response']
             except Exception as err:
                 print(err)
+                return 0
 
     async def check_pending_job(self) -> str:
         """

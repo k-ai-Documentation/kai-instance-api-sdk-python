@@ -31,11 +31,14 @@ async def sync_mode():
     print("COUNT IN PROGRESS INDEXATION DOCUMENTS")
     print(await core.count_in_progress_indexation_documents())
 
+    print("COUNT DOCUMENT BY STATE")
+    print(await core.count_document_by_state('INDEXED'))
+
     print("DOWNLOAD FILE")
     print(await core.download_file("file_id"))
 
     print("GET DOCUMENT LIST")
-    print(await core.list_docs(20, 0))
+    print(await core.list_docs(20, 0, 'INDEXED'))
 
     print("DIFFERENTIAL INDEXATION")
     print(await core.differential_indexation())
@@ -45,9 +48,6 @@ async def sync_mode():
 
     print("LAST INDEXATION END TIME")
     print(await core.last_indexation_end_time())
-
-    print("LIST INDEXED DOCUMENTS")
-    print(await core.list_indexed_documents(20, 0))
 
     print("CHECK PENDING JOB")
     print(await core.check_pending_job())
