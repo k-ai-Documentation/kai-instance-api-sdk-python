@@ -252,7 +252,7 @@ print(await chatbot.get_full_conversation("xxxxxx"))
 ```
 
 #### state-document 
-We have 6 states for a document:
+We have 7 states for a document:
 
 ```python
 'TYPE_ERROR', # document type is not supported
