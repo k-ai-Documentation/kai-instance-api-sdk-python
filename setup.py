@@ -2,12 +2,12 @@ import setuptools
 
 setuptools.setup(
     name="kai_sdk_python",
-    version="20250429",
+    version="20250506",
     author="KAI",
     author_email="support@wats.ai",
     description="sdk KAI python",
     packages=setuptools.find_packages(),
-    install_requires=['httpx==0.27.2'],
+    install_requires=['httpx==0.28.0'],
     python_requires='>=3.8',
     classifiers=[
         'Programming Language :: Python :: 3',
