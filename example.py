@@ -1,17 +1,15 @@
 import asyncio
 
-from kai_sdk_python.index import KaiStudio
+from kai_sdk_python.index import KaiStudioBackApi
 from kai_sdk_python.index import KaiStudioCredentials
 
 credentials = KaiStudioCredentials(organizationId="your organization id",
                                    instanceId="your instance id",
                                    apiKey="your api key")
 
-manage_instance = KaiStudio(credentials).manage_instance()
-search = KaiStudio(credentials).search()
-km_audit = KaiStudio(credentials).km_audit()
-semantic_graph = KaiStudio(credentials).semantic_graph()
-core = KaiStudio(credentials).core()
+km_audit = KaiStudioBackApi(credentials).km_audit()
+semantic_graph = KaiStudioBackApi(credentials).semantic_graph()
+core = KaiStudioBackApi(credentials).core()
 
 
 async def sync_mode():
@@ -57,8 +55,8 @@ async def sync_mode():
 
     print("GET DOCS BY IDS:")
     print(await core.get_doc_ids(["document_id1", "document_id2"]))
-    # AUDIT
 
+    # AUDIT
     print("GET CONFLICT INFORMATION")
     print(await km_audit.get_conflict_information(20, 0))
 
@@ -89,36 +87,6 @@ async def sync_mode():
     print("GET ANOMALIES FOR DOC")
     print(await km_audit.get_anomalies_for_doc("document_id"))
 
-    # MANAGE INSTANCE
-    print("GET GLOBAL HEALTH:")
-    print(await manage_instance.get_global_health())
-
-    print("API IS ALIVE:")
-    print(await manage_instance.is_api_alive())
-
-    # SEARCH
-    print("SEARCH QUERY:")
-    # query: 'query to search on the semantic index',
-    # user: '(optional) user identifier to log for this query',
-    # impersonate: 'name a profile to imitate the style of answer. eg: Knowledge manager',
-    # multiDocuments: 'true if you want to search across multiple documents, false if you want to retrieve an answer following only one document',
-    # needFollowingQuestions: 'true if you want to the API purpose multiple next questions, else false'
-    print(await search.query("what is the history of France TV?", "userid", "", False, False))
-
-    print("COUNT DONE REQUESTS:")
-    print(await search.count_done_requests())
-
-    print("COUNT ANSWERED DONE REQUESTS:")
-    print(await search.count_answered_done_requests())
-
-    print("GET BACK REQUESTS MADE TO THE API")
-    print(await search.get_requests_to_api(10, 0))
-
-    print("IDENTIFY SPECIFIC DOCUMENT:")
-    # input: an array on a conversation of the user and the assistant, each row of the array follow the structure { from: 'user' | 'assistant', message: string }
-    print(await search.identify_specific_document(
-        [{'from': "user", 'message': "user message"}, {'from': "assistant", 'message': "assistant message"}]))
-
     # SEMANTIC GRAPH
     print("GET NODES:")
     print(await semantic_graph.get_nodes(10, 0))
@@ -130,7 +98,7 @@ async def sync_mode():
     print(await semantic_graph.get_node_by_label("node_label"))
 
     print("DETECT APPROXIMAL NODES:")
-    print(await semantic_graph.detect_approximate_nodes("query"))
+    print(await semantic_graph.detect_approximate_nodes("query", False))
 
 
 async def async_mode():

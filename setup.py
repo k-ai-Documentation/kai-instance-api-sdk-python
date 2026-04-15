@@ -14,5 +14,5 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    url='https://github.com/k-ai-Documentation/sdk-python'
+    url='https://github.com/k-ai-Documentation/kai-instance-api-sdk-python'
 )
