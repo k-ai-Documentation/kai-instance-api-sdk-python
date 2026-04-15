@@ -7,7 +7,7 @@ SDK python enables developers to manage documents, perform audits, and explore t
 ## Installation
 Install with pip:
 ```
-pip install git+https://github.com/k-ai-Documentation/kai-instance-api-sdk-python.git@version2.0
+pip install git+https://github.com/k-ai-Documentation/kai-instance-api-sdk-python.git
 ```
 
 ## Quick start
