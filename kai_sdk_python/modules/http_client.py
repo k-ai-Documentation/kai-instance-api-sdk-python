@@ -67,4 +67,5 @@ class HttpClient:
                         await asyncio.sleep(self._retry_delay * (2 ** attempt))
                 else:
                     raise
+        assert last_error is not None
         raise last_error
