@@ -8,95 +8,96 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 python -m venv venv
 source venv/bin/activate
 pip install -e .
+pip install pytest pytest-asyncio
 ```
 
-The only runtime dependency is `httpx==0.28.0`. Python 3.8+ is required.
+The only runtime dependency is `httpx==0.28.0`. Python 3.12+ is required.
+
+## Running Tests
+
+```bash
+pytest
+```
 
 ## Running Examples
 
-There is no test suite. Behavior is validated through example scripts:
-
 ```bash
-python example.py       # Full module demonstrations
-python chat-example.py  # Chatbot-specific example
+python example.py
 ```
 
-To test a single module manually:
+To use the SDK manually:
 
 ```python
 import asyncio
-from kai_sdk_python.index import KaiStudio, KaiStudioCredentials
+from kai_sdk_python import KaiInstanceApi, KaiStudioCredentials
 
-credentials = KaiStudioCredentials(apiKey="...", organizationId="...", instanceId="...")
-search = KaiStudio(credentials).search()
+credentials = KaiStudioCredentials(api_key="...", instance_id="...")
+api = KaiInstanceApi(credentials)
 
-asyncio.run(search.query("test query", "user123", False, False, False))
+asyncio.run(api.document().list_documents())
 ```
 
 ## Architecture
 
-The SDK is a Python async client for the **KAI Studio** platform — an enterprise semantic search and knowledge management system.
+The SDK is a Python 3.12 async client for the **KAI Studio** platform.
 
 ### Entry Point
 
-`KaiStudio` (`kai_sdk_python/index.py`) is a factory class. Instantiate it with `KaiStudioCredentials`, then call getter methods to access modules:
+`KaiInstanceApi` (`kai_sdk_python/index.py`) is the factory class. Instantiate it with `KaiStudioCredentials`, then call getter methods to access modules:
 
 ```python
-studio = KaiStudio(credentials)
-studio.search()          # Search
-studio.core()            # Document management
-studio.km_audit()        # Knowledge management auditing
-studio.semantic_graph()  # Graph queries
-studio.manage_instance() # Instance/API management
-studio.chatbot()         # Conversational interface
-studio.file_instance()   # File upload/download
+from kai_sdk_python import KaiInstanceApi, KaiStudioCredentials, RetryOptions
+
+credentials = KaiStudioCredentials(api_key="...", instance_id="...")
+api = KaiInstanceApi(credentials, RetryOptions(max_retries=3, timeout=30.0))
+
+api.document()         # Document management
+api.orchestrator()     # Indexation triggers and background tasks
+api.semantic_graph()   # Knowledge graph queries
+api.audit_instance()   # Conflict anomaly management
 ```
 
 ### Credentials & Base URLs
 
-Two deployment modes, both use `KaiStudioCredentials`:
+`KaiStudioCredentials` fields (all optional strings, default `""`):
 
-- **SaaS**: Requires `organizationId`, `instanceId`, and `apiKey`. Sends `api-key`, `organization-id`, `instance-id` headers. Base URL: `https://api.kai-studio.ai/`
-- **Premise**: Only `apiKey` (optional) + `host`. Sends only `api-key` header. Base URL: the custom host.
+- `api_key` → `api-key` header
+- `instance_id` → `instance-id` header
+- `authorization` → `Authorization` header
+- `api_host` → `api-host` header
+- `host` → overrides base URL (default: `https://api.kai-studio.ai/`)
 
-`FileInstance` always uses a separate endpoint: `https://fma.kai-studio.ai/` (or `{host}/fma/`).
+Only non-empty fields are sent as headers.
 
 ### Modules
 
 | Module | File | Responsibility |
 |--------|------|----------------|
-| `Core` | `modules/Core.py` | Document lifecycle, indexation, state queries |
-| `Search` | `modules/Search.py` | Semantic search, logs, statistics |
-| `KMAudit` | `modules/KMAudit.py` | Conflict/duplicate detection, missing subjects |
-| `SemanticGraph` | `modules/SemanticGraph.py` | Graph node queries and traversal |
-| `ManageInstance` | `modules/ManageInstance.py` | API key management, instance deploy/delete, knowledge bases |
-| `Chatbot` | `modules/Chatbot.py` | Conversation history, message sending |
-| `FileInstance` | `modules/FileInstance.py` | File upload/download/delete via FMA API |
+| `Document` | `modules/document.py` | Document listing, detail, count, download |
+| `Orchestrator` | `modules/orchestrator.py` | Indexation triggers, background task monitoring |
+| `SemanticGraph` | `modules/semantic_graph.py` | Knowledge graph node queries |
+| `KMAudit` | `modules/km_audit.py` | Conflict anomaly detection and management |
 
-### Document State Machine
+### Infrastructure
 
-Documents progress through these states (defined as string constants used in `Core` queries):
+| File | Responsibility |
+|------|----------------|
+| `modules/http_client.py` | `HttpClient` — httpx wrapper with exponential backoff retry on 502/503/504 and network errors |
+| `modules/base_module.py` | `BaseModule` — abstract parent for all modules, delegates to `HttpClient` |
+
+### Retry Logic
+
+`HttpClient` retries on HTTP 502, 503, 504, and `httpx.RequestError` (network errors). Backoff formula: `retry_delay * 2^attempt`. Non-retryable statuses (4xx, 500) fail immediately. All standard responses are unwrapped from `response.json()["response"]`. The `download()` method returns raw `bytes`.
+
+### State Enum
+
+Document lifecycle states (defined in `index.py`):
 
 ```
-TYPE_ERROR → INITIAL_SAVED → UPDATED → ON_CONTENT_EXTRACT
-          → CONTENT_EXTRACTED → ON_INDEXATION → INDEXED
+PARSING_ERROR → INITIAL_SAVED → UPDATED → ON_CONTENT_EXTRACT
+             → CONTENT_EXTRACTED → ON_INDEXATION → INDEXED
 ```
 
 ### Async Pattern
 
-All API methods are `async def` using `httpx.AsyncClient`. `Core.py` additionally uses `aiohttp` for concurrent batch requests via `asyncio.gather()`. All callers must use `asyncio.run()` or an existing event loop.
-
-### Response Handling
-
-All modules follow the same pattern:
-- Success: return `response.json()['response']`
-- Error: print exception to stdout, return empty list / `0` / `None` (graceful degradation)
-
-SSL verification is disabled (`verify=False`) across all HTTP calls. There are no request timeouts.
-
-### TypedDict Data Models
-
-Key types defined in `kai_sdk_python/modules/`:
-- `DocumentResult`, `SearchResult`, `SearchLog` — search-related
-- `ConversationMessage` — chat messages (`role: "user" | "assistant"`)
-- `KaiStudioFileSignature`, `KaiStudioFileUploadResponse` — file metadata
+All API methods are `async def` using `httpx.AsyncClient`. Callers must use `asyncio.run()` or an existing event loop.
