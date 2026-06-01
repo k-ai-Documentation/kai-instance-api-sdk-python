@@ -1,7 +1,5 @@
 from unittest.mock import AsyncMock
 
-import pytest
-
 from kai_sdk_python.modules.base_module import BaseModule
 from kai_sdk_python.modules.http_client import RetryOptions
 
