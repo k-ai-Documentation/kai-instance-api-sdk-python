@@ -2,119 +2,169 @@
 
 ## Introduction
 
-SDK python enables developers to manage documents, perform audits, and explore the semantic graph of KAI instances.
+Python SDK for managing documents, auditing knowledge, and exploring the semantic graph of KAI Studio instances.
 
 ## Installation
-Install with pip:
-```
+
+```bash
 pip install git+https://github.com/k-ai-Documentation/kai-instance-api-sdk-python.git
 ```
 
-## Quick start
-
-There are two types of deployment: SaaS and Premise.
-
-#### SaaS version
-
-Requires `organizationId`, `instanceId`, and `apiKey`:
+## Quick Start
 
 ```python
-from kai_sdk_python.index import KaiStudioBackApi, KaiStudioCredentials
+import asyncio
+from kai_sdk_python import KaiInstanceApi, KaiStudioCredentials
 
-credentials = KaiStudioCredentials(organizationId="your organization id",
-                                   instanceId="your instance id",
-                                   apiKey="your api key")
+credentials = KaiStudioCredentials(
+    api_key="your-api-key",
+    instance_id="your-instance-id",
+)
 
-core = KaiStudioBackApi(credentials).core()
-print(await core.count_documents())
+api = KaiInstanceApi(credentials)
+
+asyncio.run(api.document().list_documents())
 ```
 
-#### Premise version
-
-Requires `host` and optionally `apiKey`:
+### On-Premise deployment
 
 ```python
-from kai_sdk_python.index import KaiStudioBackApi, KaiStudioCredentials
+credentials = KaiStudioCredentials(
+    host="https://your-server.example.com/",
+    api_key="your-api-key",  # optional
+)
 
-credentials = KaiStudioCredentials(host="your server host", apiKey="your api key")
-core = KaiStudioBackApi(credentials).core()
-print(await core.count_documents())
+api = KaiInstanceApi(credentials)
 ```
+
+### Custom retry / timeout
+
+```python
+from kai_sdk_python import RetryOptions
+
+api = KaiInstanceApi(
+    credentials,
+    RetryOptions(max_retries=3, retry_delay=1.0, timeout=30.0),
+)
+```
+
+## Credentials
+
+`KaiStudioCredentials` fields (all optional, default `""`):
+
+| Field | Header sent |
+|-------|-------------|
+| `api_key` | `api-key` |
+| `instance_id` | `instance-id` |
+| `authorization` | `Authorization` |
+| `api_host` | `api-host` |
+| `host` | overrides base URL (default: `https://api.kai-studio.ai/`) |
+
+Only non-empty fields are sent as request headers.
 
 ## Usage Guide
 
-### Core
-
-[Core.py](kai_sdk_python/modules/Core.py) provides methods for document and orchestration management.
-
-- `count_documents` — total document count
-- `count_indexable_documents` — count of indexable documents
-- `count_indexed_documents` — count of indexed documents
-- `count_detected_documents` — count of detected documents
-- `count_in_progress_indexation_documents` — count of documents currently being indexed
-- `count_document_by_state(state)` — count by state; see [Document States](#document-states)
-- `download_file(id)` — download a document by id
-- `list_docs(limit, offset, state)` — paginated document list, optionally filtered by state
-- `differential_indexation` — index only new/updated/removed documents
-- `last_indexation_begin_time` — timestamp when last indexation started
-- `last_indexation_end_time` — timestamp when last indexation ended
-- `check_pending_job` — background jobs currently in progress
-- `get_doc_signature(id)` — get a document's signature
-- `get_doc_ids(docsIds)` — get signatures for multiple document ids
+### Document
 
 ```python
-core = KaiStudioBackApi(credentials).core()
-print(await core.count_documents())
-print(await core.list_docs(20, 0, 'INDEXED'))
+doc = api.document()
 ```
 
-### Auditing
-
-[KMAudit.py](kai_sdk_python/modules/KMAudit.py) provides methods for auditing.
-
-- `get_conflict_information(limit, offset)` — list conflict anomalies
-- `get_duplicated_information(limit, offset)` — list duplicate anomalies
-- `set_conflict_managed(id)` — mark a conflict as managed
-- `set_duplicated_information_managed(id)` — mark a duplicate as managed
-- `get_documents_to_manage(limit, offset)` — list documents with unresolved anomalies
-- `get_missing_subjects(limit, offset)` — list subjects missing from the knowledge base
-- `get_anomalies_for_doc(doc_id)` — get conflicts and duplicates for a document
-- `count_missing_subjects` — count missing subjects
-- `count_duplicated_information` — count duplicate anomalies
-- `count_conflict_information` — count conflict anomalies
+| Method | Description |
+|--------|-------------|
+| `list_documents(offset, limit, state)` | Paginated document list, optionally filtered by state |
+| `get_document_detail(id)` | Full metadata for a single document |
+| `count_documents(state, document_ids)` | Count documents, optionally filtered |
+| `download_file(document_id)` | Download raw file bytes |
+| `docs_by_ids(ids, offset, limit)` | Fetch multiple documents by ID |
 
 ```python
-km_audit = KaiStudioBackApi(credentials).km_audit()
-print(await km_audit.get_conflict_information(20, 0))
+docs = await doc.list_documents(offset=0, limit=20, state=State.INDEXED)
+count = await doc.count_documents(state=State.INDEXED)
+data = await doc.download_file("document-id")
+```
+
+### Orchestrator
+
+```python
+orch = api.orchestrator()
+```
+
+| Method | Description |
+|--------|-------------|
+| `launch_partial_indexation()` | Index only new/updated documents |
+| `reindex_document(document_id)` | Force reindex a single document |
+| `retry_index_error_parsing_documents()` | Retry all `PARSING_ERROR` documents |
+| `count_registered_background_tasks()` | Count all background tasks by type |
+| `count_registered_background_tasks_for_doc(document_id)` | Count background tasks for a document |
+
+```python
+await orch.launch_partial_indexation()
+await orch.reindex_document("document-id")
 ```
 
 ### SemanticGraph
 
-[SemanticGraph.py](kai_sdk_python/modules/SemanticGraph.py) provides methods for exploring the semantic graph.
-
-- `get_nodes(limit, offset)` — list all semantic nodes
-- `get_linked_nodes(id)` — get nodes linked to a given node
-- `get_node_by_label(label)` — get nodes by label tag
-- `detect_approximate_nodes(query, need_documents_content)` — identify nodes relevant to a query
-
 ```python
-semantic_graph = KaiStudioBackApi(credentials).semantic_graph()
-print(await semantic_graph.get_nodes(10, 0))
+sg = api.semantic_graph()
 ```
 
-#### Document States
+| Method | Description |
+|--------|-------------|
+| `get_nodes(limit, offset)` | Paginated list of knowledge graph nodes |
+| `get_node_by_label(label)` | Find nodes matching a label |
+| `identify_nodes(query, need_documents_content)` | Find nodes relevant to a natural language query |
+| `linked_nodes_by_id(id)` | Get all nodes directly connected to a node |
 
 ```python
-'TYPE_ERROR'          # document type is not supported
-'INITIAL_SAVED'       # initial save
-'UPDATED'             # document updated without content reparse
-'ON_CONTENT_EXTRACT'  # content extraction in progress
-'CONTENT_EXTRACTED'   # content extracted and chunks saved
-'ON_INDEXATION'       # indexation in progress
-'INDEXED'             # fully indexed
+nodes = await sg.get_nodes(limit=20)
+related = await sg.identify_nodes("what is machine learning?")
 ```
 
-<u>**For more examples, see [example.py](example.py).**</u>
+### KMAudit
+
+```python
+audit = api.audit_instance()
+```
+
+| Method | Description |
+|--------|-------------|
+| `count_conflicts()` | Total conflict count |
+| `list_conflicts(limit, offset, query, document_name, state)` | Paginated conflicts with filters |
+| `update_conflict_state(id, state)` | Update a conflict's state |
+| `get_anomalies_for_document(document_id)` | All anomalies for a document |
+| `count_anomalies_per_document(limit, offset, document_ids)` | Conflict counts per document |
+| `count_conflicts_for_period(begin_date, end_date, state)` | Conflicts over a date range |
+| `count_conflicts_by_state(state)` | Count conflicts by state |
+| `get_conflict_document_pairs(...)` | Document pairs sharing conflicts |
+| `get_conflicts_by_document_pair(document_ids, ...)` | Conflicts between two documents |
+| `count_conflicts_per_subject(document_ids)` | Conflict counts grouped by subject |
+| `get_conflicts_by_subject(subject, offset, limit)` | Conflicts filtered by subject |
+| `check_if_document_is_audited(document_id)` | Whether a document has been audited |
+| `count_conflicts_by_document_id(document_ids, state)` | Conflict count for given documents |
+
+```python
+from kai_sdk_python import AnomalyState
+
+conflicts = await audit.list_conflicts(limit=50, state=AnomalyState.DETECTED)
+await audit.update_conflict_state("anomaly-id", AnomalyState.MANAGED)
+```
+
+## Document States
+
+```python
+from kai_sdk_python import State
+
+State.PARSING_ERROR       # document type not supported or parse failed
+State.INITIAL_SAVED       # saved, not yet processed
+State.UPDATED             # metadata updated
+State.ON_CONTENT_EXTRACT  # content extraction in progress
+State.CONTENT_EXTRACTED   # content extracted and chunked
+State.ON_INDEXATION       # indexation in progress
+State.INDEXED             # fully indexed and queryable
+```
+
+For more examples, see [example.py](example.py).
 
 ## Contributing
 
