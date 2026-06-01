@@ -1,45 +1,63 @@
-from .modules.KMAudit import KMAudit
-from .modules.KaiStudioCredentials import KaiStudioCredentials
-from .modules.SemanticGraph import SemanticGraph
-from .modules.Core import Core
+from dataclasses import dataclass
+from enum import Enum
+
+from .modules.http_client import RetryOptions
+from .modules.document import Document
+from .modules.orchestrator import Orchestrator
+from .modules.semantic_graph import SemanticGraph
+from .modules.km_audit import KMAudit
 
 
-class KaiStudioBackApi:
-    __credentials: KaiStudioCredentials
-    __km_audit: KMAudit
-    __semantic_graph: SemanticGraph
-    __core: Core
+class State(str, Enum):
+    PARSING_ERROR = "PARSING_ERROR"
+    INITIAL_SAVED = "INITIAL_SAVED"
+    UPDATED = "UPDATED"
+    ON_CONTENT_EXTRACT = "ON_CONTENT_EXTRACT"
+    CONTENT_EXTRACTED = "CONTENT_EXTRACTED"
+    ON_INDEXATION = "ON_INDEXATION"
+    INDEXED = "INDEXED"
 
-    def __init__(self, credentials: KaiStudioCredentials):
-        self.__credentials = credentials
 
-        if self.__credentials.organizationId and self.__credentials.instanceId and self.__credentials.apiKey:
-            headers = {
-                'api-key': self.__credentials.apiKey,
-                'organization-id': self.__credentials.organizationId,
-                'instance-id': self.__credentials.instanceId
-            }
+@dataclass
+class KaiStudioCredentials:
+    api_key: str = ""
+    instance_id: str = ""
+    host: str = ""
+    authorization: str = ""
+    api_host: str = ""
 
-            base_url = "https://api.kai-studio.ai/"
 
-            if self.__credentials.host:
-                base_url = self.__credentials.host
-                if self.__credentials.apiKey:
-                    headers = {
-                        'api-key': self.__credentials.apiKey
-                    }
-            self.__core = Core(headers, base_url)
-            self.__km_audit = KMAudit(headers, base_url)
-            self.__semantic_graph = SemanticGraph(headers, base_url)
+class KaiInstanceApi:
+    def __init__(self, credentials: KaiStudioCredentials, retry_options: RetryOptions | None = None):
+        self._credentials = credentials
+        headers = {}
+        if credentials.api_key:
+            headers["api-key"] = credentials.api_key
+        if credentials.instance_id:
+            headers["instance-id"] = credentials.instance_id
+        if credentials.authorization:
+            headers["Authorization"] = credentials.authorization
+        if credentials.api_host:
+            headers["api-host"] = credentials.api_host
 
-    def get_credentials(self) -> KaiStudioCredentials:
-        return self.__credentials
+        base_url = credentials.host or "https://api.kai-studio.ai/"
 
-    def km_audit(self) -> KMAudit:
-        return self.__km_audit
+        self._document = Document(headers, base_url, retry_options)
+        self._orchestrator = Orchestrator(headers, base_url, retry_options)
+        self._semantic_graph = SemanticGraph(headers, base_url, retry_options)
+        self._audit_instance = KMAudit(headers, base_url, retry_options)
+
+    def document(self) -> Document:
+        return self._document
+
+    def orchestrator(self) -> Orchestrator:
+        return self._orchestrator
 
     def semantic_graph(self) -> SemanticGraph:
-        return self.__semantic_graph
+        return self._semantic_graph
 
-    def core(self) -> Core:
-        return self.__core
+    def audit_instance(self) -> KMAudit:
+        return self._audit_instance
+
+    def get_credentials(self) -> KaiStudioCredentials:
+        return self._credentials
