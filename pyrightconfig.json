@@ -1,4 +1,5 @@
 {
-  "pythonPath": "/opt/homebrew/Caskroom/miniconda/base/bin/python",
-  "pythonVersion": "3.12"
+  "pythonVersion": "3.12",
+  "venvPath": ".",
+  "venv": "venv"
 }

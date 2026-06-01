@@ -1,4 +1,3 @@
-import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
@@ -56,6 +55,7 @@ async def test_with_retry_retries_on_503():
     with patch("asyncio.sleep", AsyncMock()):
         result = await client._with_retry(fn)
 
+    assert result == "ok"
     assert calls == 2
 
 
