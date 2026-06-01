@@ -1,7 +1,5 @@
 from unittest.mock import AsyncMock
 
-import pytest
-
 from kai_sdk_python.modules.km_audit import KMAudit, AnomalyState
 
 
