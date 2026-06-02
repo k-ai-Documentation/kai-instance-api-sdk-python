@@ -30,14 +30,12 @@ class KaiStudioCredentials:
         api_key: Sent as the ``api-key`` header.
         instance_id: Sent as the ``instance-id`` header.
         host: Overrides the base URL (default ``https://api.kai-studio.ai/``).
-        authorization: Sent as the ``Authorization`` header.
         api_host: Sent as the ``api-host`` header.
     """
 
     api_key: str = ""
     instance_id: str = ""
     host: str = ""
-    authorization: str = ""
     api_host: str = ""
 
 
@@ -67,8 +65,6 @@ class KaiInstanceApi:
             headers["api-key"] = credentials.api_key
         if credentials.instance_id:
             headers["instance-id"] = credentials.instance_id
-        if credentials.authorization:
-            headers["Authorization"] = credentials.authorization
         if credentials.api_host:
             headers["api-host"] = credentials.api_host
 

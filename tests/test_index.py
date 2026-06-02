@@ -39,11 +39,6 @@ def test_headers_include_instance_id():
     assert api.document()._http._headers.get("instance-id") == "my-instance"
 
 
-def test_headers_include_authorization():
-    creds = KaiStudioCredentials(authorization="Bearer token123")
-    api = KaiInstanceApi(creds)
-    assert api.document()._http._headers.get("Authorization") == "Bearer token123"
-
 
 def test_headers_include_api_host():
     creds = KaiStudioCredentials(api_host="proxy.example.com")
@@ -56,7 +51,6 @@ def test_empty_credential_fields_excluded_from_headers():
     api = KaiInstanceApi(creds)
     headers = api.document()._http._headers
     assert "instance-id" not in headers
-    assert "Authorization" not in headers
     assert "api-host" not in headers
 
 

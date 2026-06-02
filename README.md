@@ -56,7 +56,6 @@ api = KaiInstanceApi(
 |-------|-------------|-------------|
 | `api_key` | `api-key` | API key for the instance |
 | `instance_id` | `instance-id` | Target instance identifier |
-| `authorization` | `Authorization` | Bearer or custom auth token |
 | `api_host` | `api-host` | Routing header for multi-host setups |
 | `host` | — | Overrides the base URL (default: `https://api.kai-studio.ai/`) |
 
