@@ -78,11 +78,6 @@ def test_module_accessors_return_same_instance():
     assert api.audit_instance() is api.audit_instance()
 
 
-def test_get_credentials_returns_original():
-    creds = KaiStudioCredentials(api_key="k", instance_id="i")
-    api = KaiInstanceApi(creds)
-    assert api.get_credentials() is creds
-
 
 def test_retry_options_forwarded_to_modules():
     creds = KaiStudioCredentials(api_key="k")

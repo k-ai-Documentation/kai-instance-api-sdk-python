@@ -62,7 +62,6 @@ class KaiInstanceApi:
             retry_options: Optional retry/timeout configuration. Falls back to
                 :class:`~kai_sdk_python.modules.http_client.RetryOptions` defaults.
         """
-        self._credentials = credentials
         headers = {}
         if credentials.api_key:
             headers["api-key"] = credentials.api_key
@@ -96,6 +95,3 @@ class KaiInstanceApi:
         """Return the KMAudit module for conflict anomaly detection and management."""
         return self._audit_instance
 
-    def get_credentials(self) -> KaiStudioCredentials:
-        """Return the credentials used to initialise this client."""
-        return self._credentials
