@@ -63,7 +63,6 @@ api.audit_instance()   # Conflict anomaly management
 
 - `api_key` → `api-key` header
 - `instance_id` → `instance-id` header
-- `authorization` → `Authorization` header
 - `api_host` → `api-host` header
 - `host` → overrides base URL (default: `https://api.kai-studio.ai/`)
 
