@@ -193,6 +193,49 @@ AnomalyState.IGNORED       # conflict marked as not actionable
 AnomalyState.DISAPPEARED   # conflict no longer present in the knowledge base
 ```
 
+## Type Reference
+
+All types used in method signatures are importable from the top-level package.
+
+```python
+from kai_sdk_python import (
+    # Document
+    DocumentSignature,
+    # Semantic graph
+    SemanticNode,
+    IdentifiedNode,
+    # Audit
+    Anomaly,
+    DocumentAnomalies,
+    AnomalyTypeNumber,
+    ConflictDocumentPair,
+)
+```
+
+### AnomalyTypeNumber
+
+Returned by `count_conflicts_per_subject`. Counts per lifecycle state for a subject topic.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `subject` | `str` | Subject topic label |
+| `count` | `int` | Total conflicts for this subject |
+| `count_detected` | `int` | Conflicts in `DETECTED` state |
+| `count_managed` | `int` | Conflicts in `MANAGED` state |
+| `count_ignored` | `int` | Conflicts in `IGNORED` state |
+| `count_redetected` | `int` | Conflicts in `REDETECTED` state |
+| `count_disappeared` | `int` | Conflicts in `DISAPPEARED` state |
+
+### ConflictDocumentPair
+
+Returned by `get_conflict_document_pairs`. Represents two documents that share conflicts.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `document_ids` | `list[str]` | The two document IDs involved |
+| `conflict_count` | `int` | Number of shared conflicts |
+| `state` | `str` | Dominant conflict state for this pair |
+
 For more examples, see [example.py](example.py).
 
 ## Contributing
