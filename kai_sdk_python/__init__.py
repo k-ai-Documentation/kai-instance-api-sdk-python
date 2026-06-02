@@ -3,7 +3,7 @@ from .modules.http_client import RetryOptions
 from .modules.document import Document, DocumentSignature
 from .modules.orchestrator import Orchestrator
 from .modules.semantic_graph import SemanticGraph, SemanticNode, IdentifiedNode
-from .modules.km_audit import KMAudit, AnomalyState, Anomaly, DocumentAnomalies
+from .modules.km_audit import KMAudit, AnomalyState, Anomaly, DocumentAnomalies, AnomalyTypeNumber, ConflictDocumentPair
 
 __all__ = [
     "KaiInstanceApi",
@@ -20,4 +20,6 @@ __all__ = [
     "AnomalyState",
     "Anomaly",
     "DocumentAnomalies",
+    "AnomalyTypeNumber",
+    "ConflictDocumentPair",
 ]
