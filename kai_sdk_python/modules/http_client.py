@@ -7,15 +7,32 @@ import httpx
 
 @dataclass
 class RetryOptions:
+    """Configuration for HTTP retry behaviour.
+
+    Attributes:
+        max_retries: Number of additional attempts after the first failure (default 3).
+        retry_delay: Base delay in seconds between retries; doubles on each attempt (default 1.0).
+        timeout: Per-request timeout in seconds (default 30.0).
+    """
+
     max_retries: int = 3
     retry_delay: float = 1.0
     timeout: float = 30.0
 
 
 class HttpClient:
+    """Low-level async HTTP client with exponential-backoff retry for transient errors."""
+
     RETRYABLE_STATUSES = {502, 503, 504}
 
     def __init__(self, headers: dict, base_url: str, retry_options: RetryOptions | None = None):
+        """Initialise the client.
+
+        Args:
+            headers: Request headers sent with every call (e.g. ``api-key``, ``instance-id``).
+            base_url: Base URL prepended to all endpoint paths.
+            retry_options: Retry and timeout settings. Falls back to :class:`RetryOptions` defaults.
+        """
         self._headers = headers
         self._base_url = base_url
         opts = retry_options or RetryOptions()
@@ -24,9 +41,39 @@ class HttpClient:
         self._timeout = opts.timeout
 
     async def post(self, endpoint: str, data: dict | None = None) -> Any:
+        """POST JSON to *endpoint* and return the unwrapped ``response`` field.
+
+        Retries on HTTP 502/503/504 and network errors with exponential backoff.
+
+        Args:
+            endpoint: Path relative to the base URL.
+            data: JSON-serialisable payload. ``None`` sends an empty body.
+
+        Returns:
+            The value of ``response.json()["response"]``.
+
+        Raises:
+            httpx.HTTPStatusError: For non-retryable HTTP errors (4xx, 500).
+            httpx.RequestError: If all retry attempts exhaust on network errors.
+        """
         return await self._with_retry(self._do_post, endpoint, data)
 
     async def download(self, endpoint: str, data: dict | None = None) -> bytes:
+        """POST JSON to *endpoint* and return the raw response bytes.
+
+        Retries on HTTP 502/503/504 and network errors with exponential backoff.
+
+        Args:
+            endpoint: Path relative to the base URL.
+            data: JSON-serialisable payload. ``None`` sends an empty body.
+
+        Returns:
+            Raw response content as ``bytes``.
+
+        Raises:
+            httpx.HTTPStatusError: For non-retryable HTTP errors.
+            httpx.RequestError: If all retry attempts exhaust on network errors.
+        """
         return await self._with_retry(self._do_download, endpoint, data)
 
     async def _do_post(self, endpoint: str, data: dict | None) -> Any:
@@ -52,6 +99,11 @@ class HttpClient:
             return response.content
 
     async def _with_retry(self, fn, *args) -> Any:
+        """Execute *fn* with exponential-backoff retry on retryable errors.
+
+        Backoff formula: ``retry_delay * 2^attempt``. Non-retryable status codes
+        (4xx, 500) are re-raised immediately without further attempts.
+        """
         last_error: Exception | None = None
         for attempt in range(self._max_retries + 1):
             try:
